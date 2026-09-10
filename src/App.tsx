@@ -44,8 +44,26 @@ const BRANCHES = [
   }
 ];
 
+const UPI_BRANCHES = [
+  {
+    id: 'satara-gold',
+    name: 'Satara Gold',
+    upiId: '9881236771@upi'
+  },
+  {
+    id: 'satara-silver',
+    name: 'Satara Silver',
+    upiId: '9881236771@upi'
+  },
+  {
+    id: 'koregaon',
+    name: 'Koregaon Branch',
+    upiId: '9881236771@upi'
+  }
+];
+
 export default function App() {
-  const [branchModal, setBranchModal] = useState<{isOpen: boolean, type: 'whatsapp' | 'call' | 'maps' | 'upi' | null}>({isOpen: false, type: null});
+  const [branchModal, setBranchModal] = useState<{isOpen: boolean, type: 'whatsapp' | 'call' | 'maps' | 'upi' | null, selectedUpiBranch?: string | null}>({isOpen: false, type: null, selectedUpiBranch: null});
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
@@ -300,44 +318,94 @@ export default function App() {
               </div>
               
               <h2 className="font-playfair text-xl text-[#1a1515] uppercase tracking-widest mb-2 text-center relative z-10">
-                {branchModal.type === 'upi' ? 'Scan to Pay' : 'Select Branch'}
+                {branchModal.type === 'upi' ? (branchModal.selectedUpiBranch ? 'Scan to Pay' : 'Select Branch') : 'Select Branch'}
               </h2>
               <p className="text-[10px] text-[#1a1515]/60 uppercase tracking-[0.1em] font-sans text-center mb-6 relative z-10">
-                {branchModal.type === 'upi' ? 'Use any UPI app to scan and pay' : 'Choose a branch to proceed'}
+                {branchModal.type === 'upi' ? (branchModal.selectedUpiBranch ? 'Use any UPI app to scan and pay' : 'Choose a branch to proceed') : 'Choose a branch to proceed'}
               </p>
               
               {branchModal.type === 'upi' ? (
-                <div className="flex flex-col items-center relative z-10 w-full">
-                  <div className="bg-[#ffffff] p-4 border border-[#b8860b]/30 mb-4 flex justify-center">
-                    <QRCodeSVG value="upi://pay?pa=9881236771@upi&pn=Devi%20Jewellers&cu=INR" size={150} fgColor="#1a1515" />
+                !branchModal.selectedUpiBranch ? (
+                  <div className="w-full flex flex-col gap-3 relative z-10">
+                    {UPI_BRANCHES.map((branch, index) => (
+                      <motion.button
+                        key={branch.id}
+                        onClick={() => setBranchModal({ ...branchModal, selectedUpiBranch: branch.id })}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4, delay: 0.1 + index * 0.15 }}
+                        className="w-full bg-[#ffffff] text-[#7d1818] hover:bg-[#7d1818] hover:text-[#ffffff] py-4 font-sans text-[12px] uppercase tracking-[0.2em] border border-[#b8860b]/30 hover:border-[#7d1818] transition-all duration-300 text-center flex items-center justify-center group"
+                      >
+                        {branch.name}
+                      </motion.button>
+                    ))}
                   </div>
-                  
-                  <div className="w-full flex items-center justify-between bg-[#fcf9f5] border border-[#b8860b]/30 p-3 mb-6 relative group cursor-pointer hover:bg-[#f5f0e6] transition-colors"
-                       onClick={async () => {
-                         try {
-                           await navigator.clipboard.writeText('9881236771@upi');
-                           setCopied(true);
-                           setTimeout(() => setCopied(false), 2000);
-                         } catch (err) {
-                           console.error('Failed to copy text: ', err);
-                         }
-                       }}>
-                    <div className="flex flex-col">
-                      <span className="text-[9px] text-[#1a1515]/60 uppercase tracking-widest font-sans mb-0.5">UPI ID (Click to copy)</span>
-                      <span className="font-sans text-[13px] font-medium text-[#1a1515]">9881236771@upi</span>
-                    </div>
-                    <div className="text-[#7d1818] group-hover:text-[#b8860b] transition-colors">
-                      {copied ? <Check className="w-4 h-4 text-[#16a34a]" /> : <Copy className="w-4 h-4" />}
-                    </div>
-                  </div>
+                ) : (
+                  (() => {
+                    const selectedBranch = UPI_BRANCHES.find(b => b.id === branchModal.selectedUpiBranch);
+                    const upiId = selectedBranch?.upiId || '';
+                    const baseUpiUrl = `upi://pay?pa=${upiId}&pn=Devi%20Jewellers&cu=INR`;
+                    return (
+                      <div className="flex flex-col items-center relative z-10 w-full">
+                        <div className="bg-[#ffffff] p-4 border border-[#b8860b]/30 mb-4 flex justify-center">
+                          <QRCodeSVG value={baseUpiUrl} size={150} fgColor="#1a1515" />
+                        </div>
+                        
+                        <div className="w-full flex items-center justify-between bg-[#fcf9f5] border border-[#b8860b]/30 p-3 mb-6 relative group cursor-pointer hover:bg-[#f5f0e6] transition-colors"
+                             onClick={async () => {
+                               try {
+                                 await navigator.clipboard.writeText(upiId);
+                                 setCopied(true);
+                                 setTimeout(() => setCopied(false), 2000);
+                               } catch (err) {
+                                 console.error('Failed to copy text: ', err);
+                               }
+                             }}>
+                          <div className="flex flex-col">
+                            <span className="text-[9px] text-[#1a1515]/60 uppercase tracking-widest font-sans mb-0.5">UPI ID (Click to copy)</span>
+                            <span className="font-sans text-[13px] font-medium text-[#1a1515]">{upiId}</span>
+                          </div>
+                          <div className="text-[#7d1818] group-hover:text-[#b8860b] transition-colors">
+                            {copied ? <Check className="w-4 h-4 text-[#16a34a]" /> : <Copy className="w-4 h-4" />}
+                          </div>
+                        </div>
 
-                  <a
-                    href="upi://pay?pa=9881236771@upi&pn=Devi%20Jewellers&cu=INR"
-                    className="w-full bg-[#7d1818] text-[#ffffff] py-4 font-sans text-[12px] uppercase tracking-[0.2em] border border-[#b8860b]/30 hover:bg-[#b8860b] transition-all duration-300 text-center flex items-center justify-center gap-2 group"
-                  >
-                    Open UPI App
-                  </a>
-                </div>
+                        <div className="w-full grid grid-cols-2 gap-2 mb-2">
+                          <a
+                            href={`gpay://upi/pay?pa=${upiId}&pn=Devi%20Jewellers&cu=INR`}
+                            className="w-full bg-[#ffffff] text-[#7d1818] py-3 font-sans text-[10px] uppercase tracking-[0.1em] border border-[#b8860b]/30 hover:border-[#7d1818] transition-all duration-300 text-center flex items-center justify-center"
+                          >
+                            GPay
+                          </a>
+                          <a
+                            href={`phonepe://pay?pa=${upiId}&pn=Devi%20Jewellers&cu=INR`}
+                            className="w-full bg-[#ffffff] text-[#7d1818] py-3 font-sans text-[10px] uppercase tracking-[0.1em] border border-[#b8860b]/30 hover:border-[#7d1818] transition-all duration-300 text-center flex items-center justify-center"
+                          >
+                            PhonePe
+                          </a>
+                          <a
+                            href={`paytmmp://pay?pa=${upiId}&pn=Devi%20Jewellers&cu=INR`}
+                            className="w-full bg-[#ffffff] text-[#7d1818] py-3 font-sans text-[10px] uppercase tracking-[0.1em] border border-[#b8860b]/30 hover:border-[#7d1818] transition-all duration-300 text-center flex items-center justify-center"
+                          >
+                            Paytm
+                          </a>
+                          <a
+                            href={`bhim://pay?pa=${upiId}&pn=Devi%20Jewellers&cu=INR`}
+                            className="w-full bg-[#ffffff] text-[#7d1818] py-3 font-sans text-[10px] uppercase tracking-[0.1em] border border-[#b8860b]/30 hover:border-[#7d1818] transition-all duration-300 text-center flex items-center justify-center"
+                          >
+                            BHIM
+                          </a>
+                        </div>
+                        <a
+                          href={baseUpiUrl}
+                          className="w-full bg-[#7d1818] text-[#ffffff] py-3 font-sans text-[11px] uppercase tracking-[0.2em] border border-[#b8860b]/30 hover:bg-[#b8860b] transition-all duration-300 text-center flex items-center justify-center mt-2"
+                        >
+                          Other UPI Apps
+                        </a>
+                      </div>
+                    );
+                  })()
+                )
               ) : (
                 <div className="w-full flex flex-col gap-3 relative z-10">
                   {BRANCHES.map((branch, index) => (
