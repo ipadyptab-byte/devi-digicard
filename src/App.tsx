@@ -48,17 +48,17 @@ const UPI_BRANCHES = [
   {
     id: 'satara-gold',
     name: 'Satara Gold',
-    upiId: '9881236771@upi'
+    upiId: 'devijewellers.63058810@hdfcbank'
   },
   {
     id: 'satara-silver',
     name: 'Satara Silver',
-    upiId: '9881236771@upi'
+    upiId: 'devijewellers.66054371@hdfcbank'
   },
   {
     id: 'koregaon',
     name: 'Koregaon Branch',
-    upiId: '9881236771@upi'
+    upiId: 'devijewellers.66028246@hdfcbank'
   }
 ];
 
