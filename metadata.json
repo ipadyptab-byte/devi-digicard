@@ -1,0 +1,6 @@
+{
+  "name": "Devi Jewellers Virtual Card",
+  "description": "A premium, rich digital business card for Devi Jewellers featuring traditional Indian aesthetics, glassy styling, and a royal color palette.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

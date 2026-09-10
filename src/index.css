@@ -1,0 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:wght@300;400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-playfair: "Playfair Display", serif;
+  --font-poppins: "Poppins", sans-serif;
+  
+  --color-luxury-bg: #fcf9f2;
+  --color-luxury-ink: #1a1515;
+  --color-luxury-maroon: #7d1818;
+  --color-luxury-gold: #b8860b;
+}
+
