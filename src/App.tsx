@@ -193,7 +193,7 @@ export default function App() {
 
         {/* Links Section */}
         <div className="mt-8 grid grid-cols-2 gap-3 w-full">
-          {LINKS.map((link, index) => (
+          {(isGeneratingPdf ? LINKS.filter(link => link.name !== 'Pay Now') : LINKS).map((link, index, arr) => (
             <motion.a
               key={link.name}
               href={link.href}
@@ -205,7 +205,7 @@ export default function App() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: link.delay }}
               whileHover={{ y: -4 }}
-              className={`group flex flex-col items-center justify-center p-6 bg-[#ffffff] border border-[#b8860b]/15 hover:border-[#7d1818] transition-all duration-300 shadow-[0_1px_2px_rgba(0,0,0,0.05)] ${index === LINKS.length - 1 && LINKS.length % 2 !== 0 ? 'col-span-2 py-5' : ''}`}
+              className={`group flex flex-col items-center justify-center p-6 bg-[#ffffff] border border-[#b8860b]/15 hover:border-[#7d1818] transition-all duration-300 shadow-[0_1px_2px_rgba(0,0,0,0.05)] ${index === arr.length - 1 && arr.length % 2 !== 0 ? 'col-span-2 py-5' : ''}`}
             >
               <link.icon className="w-6 h-6 text-[#b8860b] mb-3 group-hover:text-[#7d1818] transition-colors" strokeWidth={1.5} />
               
@@ -233,13 +233,11 @@ export default function App() {
                   </div>
                   <span className="font-sans text-[6px] text-[#1a1515]/70 text-center break-all mb-2">{branch.upiId}</span>
                   
-                  <div className="w-full grid grid-cols-2 gap-1 mt-auto">
-                    <a href={`gpay://upi/pay?pa=${branch.upiId}&pn=Devi%20Jewellers&cu=INR`} className="bg-[#fcf9f2] text-[#7d1818] border border-[#b8860b]/20 py-1 text-[6px] uppercase text-center hover:bg-[#b8860b] hover:text-white transition-colors">GPay</a>
-                    <a href={`phonepe://pay?pa=${branch.upiId}&pn=Devi%20Jewellers&cu=INR`} className="bg-[#fcf9f2] text-[#7d1818] border border-[#b8860b]/20 py-1 text-[6px] uppercase text-center hover:bg-[#b8860b] hover:text-white transition-colors">PhonePe</a>
-                    <a href={`paytmmp://pay?pa=${branch.upiId}&pn=Devi%20Jewellers&cu=INR`} className="bg-[#fcf9f2] text-[#7d1818] border border-[#b8860b]/20 py-1 text-[6px] uppercase text-center hover:bg-[#b8860b] hover:text-white transition-colors">Paytm</a>
-                    <a href={`bhim://pay?pa=${branch.upiId}&pn=Devi%20Jewellers&cu=INR`} className="bg-[#fcf9f2] text-[#7d1818] border border-[#b8860b]/20 py-1 text-[6px] uppercase text-center hover:bg-[#b8860b] hover:text-white transition-colors">BHIM</a>
+                  <div className="w-full mt-auto">
+                    <a href={`upi://pay?pa=${branch.upiId}&pn=Devi%20Jewellers&cu=INR`} className="block w-full bg-[#7d1818] text-white py-2 text-[8px] uppercase text-center hover:bg-[#b8860b] transition-colors tracking-wider border border-[#7d1818] hover:border-[#b8860b]">
+                      Pay Now
+                    </a>
                   </div>
-                  <a href={`upi://pay?pa=${branch.upiId}&pn=Devi%20Jewellers&cu=INR`} className="w-full bg-[#7d1818] text-white py-1 mt-1 text-[6px] uppercase text-center hover:bg-[#b8860b] transition-colors tracking-wider">Other Apps</a>
                 </div>
               ))}
             </div>
