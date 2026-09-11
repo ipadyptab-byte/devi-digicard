@@ -23,7 +23,7 @@ const LINKS = [
   { name: 'Call Now', icon: Phone, href: 'tel:+919881236771', delay: 0.6 },
   { name: 'Website', icon: Globe, href: 'https://devi-jewellers.com', delay: 0.7 },
   { name: 'Maps', icon: MapPin, href: 'https://maps.app.goo.gl/uQPtYYZgeECDcMao7', delay: 0.8 },
-  { name: 'Pay Now', icon: IndianRupee, href: 'upi://pay?pa=9881236771@upi&pn=Devi%20Jewellers&cu=INR', delay: 0.9 },
+  { name: 'Pay Now', icon: IndianRupee, href: 'upi://pay?pa=devijewellers.63058810@hdfcbank&pn=Devi%20Jewellers&cu=INR', delay: 0.9 },
   { name: 'Save Contact', icon: UserPlus, href: vcardDataUri, delay: 1.0 },
 ];
 
@@ -215,6 +215,36 @@ export default function App() {
             </motion.a>
           ))}
         </div>
+
+        {/* PDF Only: UPI QRs & Buttons */}
+        {isGeneratingPdf && (
+          <div className="mt-8 w-full flex flex-col items-center">
+            <div className="flex items-center gap-4 mb-4 w-full">
+              <div className="h-[1px] flex-grow bg-[#b8860b]/20"></div>
+              <h3 className="font-playfair text-[#1a1515] uppercase tracking-widest text-xs">Pay Here</h3>
+              <div className="h-[1px] flex-grow bg-[#b8860b]/20"></div>
+            </div>
+            
+            <div className="grid grid-cols-3 w-full gap-2">
+              {UPI_BRANCHES.map(branch => (
+                <div key={branch.id} className="flex flex-col items-center bg-[#ffffff] border border-[#b8860b]/20 p-2 shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
+                  <div className="h-6 flex items-center justify-center mb-2">
+                    <span className="text-[#7d1818] uppercase tracking-[0.05em] text-[8px] font-medium text-center leading-tight">{branch.name}</span>
+                  </div>
+                  <span className="font-sans text-[6px] text-[#1a1515]/70 text-center break-all mb-2">{branch.upiId}</span>
+                  
+                  <div className="w-full grid grid-cols-2 gap-1 mt-auto">
+                    <a href={`gpay://upi/pay?pa=${branch.upiId}&pn=Devi%20Jewellers&cu=INR`} className="bg-[#fcf9f2] text-[#7d1818] border border-[#b8860b]/20 py-1 text-[6px] uppercase text-center hover:bg-[#b8860b] hover:text-white transition-colors">GPay</a>
+                    <a href={`phonepe://pay?pa=${branch.upiId}&pn=Devi%20Jewellers&cu=INR`} className="bg-[#fcf9f2] text-[#7d1818] border border-[#b8860b]/20 py-1 text-[6px] uppercase text-center hover:bg-[#b8860b] hover:text-white transition-colors">PhonePe</a>
+                    <a href={`paytmmp://pay?pa=${branch.upiId}&pn=Devi%20Jewellers&cu=INR`} className="bg-[#fcf9f2] text-[#7d1818] border border-[#b8860b]/20 py-1 text-[6px] uppercase text-center hover:bg-[#b8860b] hover:text-white transition-colors">Paytm</a>
+                    <a href={`bhim://pay?pa=${branch.upiId}&pn=Devi%20Jewellers&cu=INR`} className="bg-[#fcf9f2] text-[#7d1818] border border-[#b8860b]/20 py-1 text-[6px] uppercase text-center hover:bg-[#b8860b] hover:text-white transition-colors">BHIM</a>
+                  </div>
+                  <a href={`upi://pay?pa=${branch.upiId}&pn=Devi%20Jewellers&cu=INR`} className="w-full bg-[#7d1818] text-white py-1 mt-1 text-[6px] uppercase text-center hover:bg-[#b8860b] transition-colors tracking-wider">Other Apps</a>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Opening Hours */}
         <motion.div
